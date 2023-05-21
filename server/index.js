@@ -1,14 +1,16 @@
 // import express
 const express = require("express")
 
+// initialize express application
+const app = express()
+
 // import path module
 const path = require('path')
 
+const db = require('./queries')
+
 // define a PORT for our server to run
 const PORT = 8000
-
-// initialize express application
-const app = express()
 
 // host react app as static files
 app.use(express.static(path.resolve(__dirname, '../client/build')))
@@ -17,10 +19,18 @@ app.use(express.static(path.resolve(__dirname, '../client/build')))
 app.get('/', (req, res) => {
  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'))
 })
-app.get('/api', (req, res) => {
- // send message back to client
- res.json({ message: 'Yo yo from the server!' })
-})
+
+
+// CRUD
+// CREATE
+
+// READ
+app.get('/links', db.getLinks)
+app.get('/links/:id',db)
+
+// UPDATE
+
+// DELETE
 
 // start app at PORT
 app.listen(PORT, () => {
