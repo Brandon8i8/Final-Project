@@ -35,6 +35,7 @@ app.post('/links', db.createLink)
 // READ
 app.get('/links', db.getLinks)
 app.get('/links/:id', db.getLinkByID)
+app.get('/links/category/:category', db.getLinksByCategory)
 
 // UPDATE
 app.put('/links/:id', db.updateLink)

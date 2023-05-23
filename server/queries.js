@@ -17,26 +17,22 @@ const pool = new POOL({
 
 // create a new link in the db
 const createLink = (request, response) => {
- // take data the user passes us and insert it into our table
- const name = request.body.name
- const url = request.body.url
+  const { name, url, category } = request.body;
 
- if (name && url) {
-  pool.query(
-   'INSERT INTO links (name, URL) VALUES ($1, $2)', 
-   [name, url], 
-   (error, results) => {
-    if(error) {
-     throw error
-    }
-    console.log(results)
-    response.status(201).send(`Link add with ID: ${results.insertId}`)
-   },
-  )
- } else {
-  response.status(403).send("Server is expecting data object with a name and URL parameter!")
- }
-
+  if (name && url && category) {
+    pool.query(
+      'INSERT INTO links (name, URL, category) VALUES ($1, $2, $3)',
+      [name, url, category],
+      (error, results) => {
+        if(error) {
+          throw error;
+        }
+        response.status(201).send(`Link added with ID: ${results.insertId}`);
+      },
+    )
+  } else {
+    response.status(403).send("Server is expecting data object with a name, URL, and category parameter!");
+  }
 }
 
 // read all data from db
@@ -61,14 +57,25 @@ const getLinkByID = (req, res) => {
   })
 }
 
+const getLinksByCategory = (req, res) => {
+  const category = req.params.category;
+
+  pool.query("SELECT * FROM links WHERE category = $1", [category], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    res.status(200).json(results.rows);
+  })
+}
+
 // update link in the db
 const updateLink = (req, res) => {
   const id = parseInt(req.params.id);
-  const { name, url } = req.body;
+  const { name, url, category } = req.body;
 
   pool.query(
-    "UPDATE links SET name = $1, url = $2 WHERE id = $3",
-    [name, url, id],
+    "UPDATE links SET name = $1, url = $2, category = $3 WHERE id = $4",
+    [name, url, category, id],
     (error, results) => {
       if (error) {
         throw error;
@@ -100,4 +107,5 @@ module.exports = {
  getLinkByID,
  updateLink,
  deleteLink,
+ getLinksByCategory,
 }
