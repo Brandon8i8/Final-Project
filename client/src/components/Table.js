@@ -9,6 +9,7 @@ const TableHeader = () => {
       <tr>
         <th>Name</th>
         <th>URL</th>
+        <th>Category</th>
         <th>Remove</th>
       </tr>
     </thead>
@@ -16,8 +17,7 @@ const TableHeader = () => {
 }
 
 const TableBody = (props) => {
-  // boilerplate table body functional component
-  // we use Array.map to create table rows from LinkData passed via props
+
   const rows = props.linkData.map((row, index) => {
     return (
       <tr key={index}>
@@ -25,6 +25,7 @@ const TableBody = (props) => {
         <td>
           <a href={row.url}>{row.url}</a>
         </td>
+        <td>{row.category}</td>
         <td>
           <button onClick={() => props.removeLink(index)}>Delete</button>
         </td>

@@ -66,6 +66,7 @@ const LinkContainer = (props) => {
 
     // pull latest data from postgres
     fetchLinks()
+    console.log(favLink)
   }
 
   return (
