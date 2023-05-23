@@ -1,73 +1,85 @@
 // /client/LinkContainer.js
 
-import {React, useState, useEffect } from 'react'
-import { Typography } from '@mui/material';
+import { React, useState, useEffect } from 'react';
+import { Typography, CircularProgress } from '@mui/material';
 import Table from './Table';
 import Form from './Form';
 
-const LinkContainer = (props) => {
-  const [links,setLinks] = useState(null);
+const LinkContainer = () => {
+  const [links, setLinks] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchLinks = async () => {
+    setLoading(true);
     try {
-      let response = await fetch("/links")
-      console.log(response)
-      let data = await response.json()
-      setLinks(data)
-      console.log(data)
-    } catch(error) {
-      console.log(error)
+      const response = await fetch("/links");
+      const data = await response.json();
+      setLinks(data);
+    } catch (error) {
+      console.error(error);
+      setError("Error fetching links. Please try again later.");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
   const postLink = async (newLink) => {
     try {
-      let response = await fetch('/links' , {
+      const response = await fetch('/links', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newLink)
-      })
-      console.log(response)
-      let message = await response.text()
-      console.log(message)
-    } catch(error) {
-      console.log(error)
+        body: JSON.stringify(newLink),
+      });
+      const message = await response.text();
+      console.log(message);
+    } catch (error) {
+      console.error(error);
+      setError("Error adding link. Please try again later.");
     }
-  }
+  };
+
   const deleteLink = async (id) => {
     try {
-      let response = await fetch(`/links/${id}`, {
+      const response = await fetch(`/links/${id}`, {
         method: 'DELETE',
-      })
-      console.log(response)
-      let message = await response.text()
-      console.log(message)
-    } catch(error) {
-      console.log(error)
+      });
+      const message = await response.text();
+      console.log(message);
+    } catch (error) {
+      console.error(error);
+      setError("Error deleting link. Please try again later.");
     }
-  }
+  };
 
   useEffect(() => {
-    if (links == null) {
-      fetchLinks()
+    if (!links) {
+      fetchLinks();
     }
-  }, [])
+  }, []);
 
   const handleRemove = (index) => {
-    const updatedLinks = links.filter((_,i) => i !== index);
+    const updatedLinks = links.filter((_, i) => i !== index);
     setLinks(updatedLinks);
-    deleteLink(links[index].id)
-  }
+    deleteLink(links[index].id);
+  };
 
   const handleSubmit = async (favLink) => {
-
     // save data to postgres
-    postLink(favLink)
+    postLink(favLink);
 
     // pull latest data from postgres
-    fetchLinks()
-    console.log(favLink)
+    fetchLinks();
+  };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <Typography variant="subtitle1" color="error">{error}</Typography>;
   }
 
   return (
@@ -76,7 +88,7 @@ const LinkContainer = (props) => {
         My Favorite Links
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
-        Add a new url with a name and link to the table.
+        Add a new URL with a name and link to the table.
       </Typography>
       <Table linkData={links} removeLink={handleRemove} />
 
@@ -85,7 +97,8 @@ const LinkContainer = (props) => {
       </Typography>
       <Form handleSubmit={handleSubmit} />
     </div>
-  )
-}
+  );
+};
 
-export default LinkContainer
+export default LinkContainer;
+

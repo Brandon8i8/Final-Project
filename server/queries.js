@@ -1,111 +1,110 @@
 // /server/queries.js
 
-require('dotenv').config()
+require('dotenv').config();
 
 // connect to postgres using the node-postgres package
-const POOL = require('pg').Pool
+const { Pool } = require('pg');
 
-const pool = new POOL({
- user: 'bc',
- host: 'localhost',
- database: 'api',
- password: process.env.POSTGRES_PASSWORD,
- port: 5432,
-})
-
-// create all functions that will be our request handlers in our express server
+const pool = new Pool({
+  user: 'bc',
+  host: 'localhost',
+  database: 'api',
+  password: process.env.POSTGRES_PASSWORD,
+  port: 5432,
+});
 
 // create a new link in the db
-const createLink = (request, response) => {
-  const { name, url, category } = request.body;
+const createLink = async (request, response) => {
+  try {
+    const { name, url, category } = request.body;
 
-  if (name && url && category) {
-    pool.query(
-      'INSERT INTO links (name, URL, category) VALUES ($1, $2, $3)',
-      [name, url, category],
-      (error, results) => {
-        if(error) {
-          throw error;
-        }
-        response.status(201).send(`Link added with ID: ${results.insertId}`);
-      },
-    )
-  } else {
-    response.status(403).send("Server is expecting data object with a name, URL, and category parameter!");
+    if (name && url && category) {
+      const query = 'INSERT INTO links (name, URL, category) VALUES ($1, $2, $3) RETURNING id';
+      const values = [name, url, category];
+      const result = await pool.query(query, values);
+
+      response.status(201).send(`Link added with ID: ${result.rows[0].id}`);
+    } else {
+      response.status(403).send("Server is expecting data object with a name, URL, and category parameter!");
+    }
+  } catch (error) {
+    console.error(error);
+    response.status(500).send("Server encountered an error while creating the link.");
   }
-}
+};
 
 // read all data from db
-const getLinks = (req, res) => {
- // get back all the data currently in the database
- pool.query('SELECT * FROM links ORDER BY id ASC', (error, result) => {
-  if (error) {
-   throw error;
+const getLinks = async (req, res) => {
+  try {
+    const query = 'SELECT * FROM links ORDER BY id ASC';
+    const result = await pool.query(query);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server encountered an error while retrieving the links.");
   }
-  res.status(200).json(result.rows)
- })
-}
+};
 
-const getLinkByID = (req, res) => {
-  const id = parseInt(req.params.id);
+const getLinkByID = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const query = 'SELECT * FROM links WHERE id = $1';
+    const result = await pool.query(query, [id]);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server encountered an error while retrieving the link.");
+  }
+};
 
-  pool.query("SELECT * FROM links WHERE id = $1", [id], (error, results) => {
-    if (error) {
-      throw error;
-    }
-    res.status(200).json(results.rows);
-  })
-}
-
-const getLinksByCategory = (req, res) => {
-  const category = req.params.category;
-
-  pool.query("SELECT * FROM links WHERE category = $1", [category], (error, results) => {
-    if (error) {
-      throw error;
-    }
-    res.status(200).json(results.rows);
-  })
-}
+const getLinksByCategory = async (req, res) => {
+  try {
+    const category = req.params.category;
+    const query = 'SELECT * FROM links WHERE category = $1';
+    const result = await pool.query(query, [category]);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server encountered an error while retrieving the links by category.");
+  }
+};
 
 // update link in the db
-const updateLink = (req, res) => {
-  const id = parseInt(req.params.id);
-  const { name, url, category } = req.body;
+const updateLink = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { name, url, category } = req.body;
 
-  pool.query(
-    "UPDATE links SET name = $1, url = $2, category = $3 WHERE id = $4",
-    [name, url, category, id],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      res.status(200).send(`Link modified with ID: ${id}`);
-    }
-  );
+    const query = 'UPDATE links SET name = $1, url = $2, category = $3 WHERE id = $4';
+    const values = [name, url, category, id];
+    await pool.query(query, values);
+
+    res.status(200).send(`Link modified with ID: ${id}`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server encountered an error while updating the link.");
+  }
 };
 
 // delete link in the db
-const deleteLink = (req, res) => {
-  const id = parseInt(req.params.id);
+const deleteLink = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const query = 'DELETE FROM links WHERE id = $1';
+    await pool.query(query, [id]);
 
-  pool.query(
-    "DELETE FROM links WHERE id = $1",
-    [id],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      res.status(200).send(`Link deleted with ID: ${id}`);
-    }
-  );
+    res.status(200).send(`Link deleted with ID: ${id}`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server encountered an error while deleting the link.");
+  }
 };
 
 module.exports = {
- createLink,
- getLinks,
- getLinkByID,
- updateLink,
- deleteLink,
- getLinksByCategory,
-}
+  createLink,
+  getLinks,
+  getLinkByID,
+  updateLink,
+  deleteLink,
+  getLinksByCategory,
+};
