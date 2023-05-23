@@ -3,6 +3,9 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 const Form = (props) => {
   const [name, setName] = useState('');
@@ -13,13 +16,12 @@ const Form = (props) => {
     const { name, value } = event.target;
     if (name === 'name') setName(value);
     if (name === 'url') setURL(value);
-    if (name == 'category') setCategory(value);
+    if (name === 'category') setCategory(value);
   }
 
   const onFormSubmit = (event) => {
-    // to prevent page reload on form submit
-    event.preventDefault()
-    props.handleSubmit({ name, url, category});
+    event.preventDefault();
+    props.handleSubmit({ name, url, category });
     setName('');
     setURL('');
     setCategory('');
@@ -27,38 +29,42 @@ const Form = (props) => {
 
   return (
     <form onSubmit={onFormSubmit} style={{ marginBottom: '2em' }}>
-      <TextField 
-        id="name" 
-        label="Name" 
-        value={name} 
-        onChange={handleChange} 
+      <TextField
+        id="name"
+        label="Name"
+        value={name}
+        onChange={handleChange}
         name="name"
         variant="outlined"
         style={{ marginRight: '1em' }}
       />
-      <TextField 
-        id="url" 
-        label="URL" 
-        value={url} 
-        onChange={handleChange} 
+      <TextField
+        id="url"
+        label="URL"
+        value={url}
+        onChange={handleChange}
         name="url"
         variant="outlined"
         style={{ marginRight: '1em' }}
       />
-      <TextField 
-        id="category" 
-        label="Category" 
-        value={category} 
-        onChange={handleChange} 
-        name="category"
-        variant="outlined"
-        style={{ marginRight: '1em' }}
-      />
+      <FormControl variant="outlined" style={{ marginRight: '1em' }}>
+        <Select
+          id="category"
+          label="Category"
+          value={category}
+          onChange={handleChange}
+          name="category"
+        >
+          <MenuItem value="Category 1">Category 1</MenuItem>
+          <MenuItem value="Category 2">Category 2</MenuItem>
+          <MenuItem value="Category 3">Category 3</MenuItem>
+        </Select>
+      </FormControl>
       <Button variant="contained" color="primary" type="submit">
         Add Link
       </Button>
     </form>
-  )
-}
+  );
+};
 
-export default Form
+export default Form;
