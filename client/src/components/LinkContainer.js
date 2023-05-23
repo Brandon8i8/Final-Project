@@ -1,24 +1,65 @@
-import React, { useState } from 'react'
+// /client/LinkContainer.js
+
+import {React, useState, useEffect } from 'react'
 import Table from './Table';
 import Form from './Form';
 
 const LinkContainer = (props) => {
-  const [favLinks,setFavLinks] = useState([]);
+  const [links,setLinks] = useState(null);
+
+  const fetchLinks = async () => {
+    try {
+      let response = await fetch("/links")
+      console.log(response)
+      let data = await response.json()
+      setLinks(data)
+      console.log(data)
+    } catch(error) {
+      console.log(error)
+    }
+  }
+  const postLink = async (newLink) => {
+    try {
+      let response = await fetch('/links' , {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newLink)
+      })
+      console.log(response)
+      let message = await response.text()
+      console.log(message)
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (links == null) {
+      fetchLinks()
+    }
+  }, [])
 
   const handleRemove = (index) => {
-    const updatedLinks = favLinks.filter((_,i) => i !== index);
-    setFavLinks(updatedLinks);
+    const updatedLinks = links.filter((_,i) => i !== index);
+    setLinks(updatedLinks);
   }
 
   const handleSubmit = (favLink) => {
-    setFavLinks([...favLinks, favLink]);
+
+    // save data to postgres
+    postLink(favLink)
+
+    // pull latest data from postgres
+    fetchLinks()
   }
 
   return (
     <div className="container">
       <h1>My Favorite Links</h1>
       <p>Add a new url with a name and link to the table.</p>
-      <Table linkData={favLinks} removeLink={handleRemove} />
+      <Table linkData={links} removeLink={handleRemove} />
 
       <br />
 

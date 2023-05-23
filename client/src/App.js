@@ -3,6 +3,7 @@ import LinkContainer from './components/LinkContainer'
 import {useEffect, useState} from 'react'
 
 function App() {
+  /*
   const [message, setMessage] = useState(null) 
 
   const fetchAPI = async () => {
@@ -19,13 +20,10 @@ function App() {
     // use fetch to get our data
     fetchAPI()
   }, [])
-
+*/
   return (
     <div className="App">
       <LinkContainer />
-      <p>
-        {message ? message : "Loading..."}
-      </p>
     </div>
   )
 }

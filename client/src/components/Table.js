@@ -1,3 +1,5 @@
+// /client/Table.js
+
 import React from 'react'
 
 const TableHeader = () => {
@@ -21,7 +23,7 @@ const TableBody = (props) => {
       <tr key={index}>
         <td>{row.name}</td>
         <td>
-          <a href={row.URL}>{row.URL}</a>
+          <a href={row.url}>{row.url}</a>
         </td>
         <td>
           <button onClick={() => props.removeLink(index)}>Delete</button>
@@ -35,10 +37,13 @@ const TableBody = (props) => {
 
 const Table = (props) => {
   {
-    return <table>
+    return (
+    <table>
       <TableHeader />
-      <TableBody linkData={props.linkData} removeLink={props.removeLink} />
+      <TableBody linkData={props.linkData ? props.linkData : []} 
+      removeLink={props.removeLink} />
     </table>
+    )
   }
 }
 
