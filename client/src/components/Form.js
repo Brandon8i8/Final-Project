@@ -55,9 +55,11 @@ const Form = (props) => {
           onChange={handleChange}
           name="category"
         >
-          <MenuItem value="Category 1">Category 1</MenuItem>
-          <MenuItem value="Category 2">Category 2</MenuItem>
-          <MenuItem value="Category 3">Category 3</MenuItem>
+          <MenuItem value="Productivity">Productivity</MenuItem>
+          <MenuItem value="Entertainment">Entertainment</MenuItem>
+          <MenuItem value="Shopping">Shopping</MenuItem>
+          <MenuItem value="Food">Food</MenuItem>
+          <MenuItem value="Other">Other</MenuItem>
         </Select>
       </FormControl>
       <Button variant="contained" color="primary" type="submit">
