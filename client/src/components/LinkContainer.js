@@ -1,6 +1,7 @@
 // /client/LinkContainer.js
 
 import {React, useState, useEffect } from 'react'
+import { Typography } from '@mui/material';
 import Table from './Table';
 import Form from './Form';
 
@@ -71,13 +72,17 @@ const LinkContainer = (props) => {
 
   return (
     <div className="container">
-      <h1>My Favorite Links</h1>
-      <p>Add a new url with a name and link to the table.</p>
+      <Typography variant="h2" component="div" gutterBottom>
+        My Favorite Links
+      </Typography>
+      <Typography variant="subtitle1" gutterBottom>
+        Add a new url with a name and link to the table.
+      </Typography>
       <Table linkData={links} removeLink={handleRemove} />
 
-      <br />
-
-      <h3>Add New</h3>
+      <Typography variant="h5" component="div" gutterBottom>
+        Add New
+      </Typography>
       <Form handleSubmit={handleSubmit} />
     </div>
   )

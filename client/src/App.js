@@ -1,31 +1,26 @@
-import React from 'react'
-import LinkContainer from './components/LinkContainer'
-import {useEffect, useState} from 'react'
+import React from "react";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import LinkContainer from "./components/LinkContainer";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#3f51b5',
+    },
+    secondary: {
+      main: '#f44336',
+    },
+  },
+});
 
 function App() {
-  /*
-  const [message, setMessage] = useState(null) 
-
-  const fetchAPI = async () => {
-    try {
-      let response = await fetch('/api')
-      let data = await response.json()
-      setMessage(data.message)
-    } catch(error) {
-      console.log(error)
-    }
-  }
-  useEffect(() => {
-    // perform API request
-    // use fetch to get our data
-    fetchAPI()
-  }, [])
-*/
   return (
-    <div className="App">
-      <LinkContainer />
-    </div>
-  )
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <LinkContainer />
+      </div>
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;

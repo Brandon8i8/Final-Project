@@ -1,6 +1,8 @@
 // /client/Form.js
 
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 const Form = (props) => {
   const [name, setName] = useState('');
@@ -24,14 +26,37 @@ const Form = (props) => {
   }
 
   return (
-    <form onSubmit={onFormSubmit}>
-      <label htmlFor="name">Name:</label>
-      <input type="text" name="name" value={name} onChange={handleChange} />
-      <label htmlFor="url">URL:</label>
-      <input type="text" name="url" value={url} onChange={handleChange} />
-      <label htmlFor="category">Category:</label>
-      <input type="text" name="category" value={category} onChange={handleChange} />
-      <button type="submit">Add Link</button>
+    <form onSubmit={onFormSubmit} style={{ marginBottom: '2em' }}>
+      <TextField 
+        id="name" 
+        label="Name" 
+        value={name} 
+        onChange={handleChange} 
+        name="name"
+        variant="outlined"
+        style={{ marginRight: '1em' }}
+      />
+      <TextField 
+        id="url" 
+        label="URL" 
+        value={url} 
+        onChange={handleChange} 
+        name="url"
+        variant="outlined"
+        style={{ marginRight: '1em' }}
+      />
+      <TextField 
+        id="category" 
+        label="Category" 
+        value={category} 
+        onChange={handleChange} 
+        name="category"
+        variant="outlined"
+        style={{ marginRight: '1em' }}
+      />
+      <Button variant="contained" color="primary" type="submit">
+        Add Link
+      </Button>
     </form>
   )
 }
