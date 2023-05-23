@@ -34,6 +34,18 @@ const LinkContainer = (props) => {
       console.log(error)
     }
   }
+  const deleteLink = async (id) => {
+    try {
+      let response = await fetch(`/links/${id}`, {
+        method: 'DELETE',
+      })
+      console.log(response)
+      let message = await response.text()
+      console.log(message)
+    } catch(error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
     if (links == null) {
@@ -44,9 +56,10 @@ const LinkContainer = (props) => {
   const handleRemove = (index) => {
     const updatedLinks = links.filter((_,i) => i !== index);
     setLinks(updatedLinks);
+    deleteLink(links[index].id)
   }
 
-  const handleSubmit = (favLink) => {
+  const handleSubmit = async (favLink) => {
 
     // save data to postgres
     postLink(favLink)

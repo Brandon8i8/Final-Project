@@ -19,12 +19,12 @@ const pool = new POOL({
 const createLink = (request, response) => {
  // take data the user passes us and insert it into our table
  const name = request.body.name
- const URL = request.body.url
+ const url = request.body.url
 
- if (name && URL) {
+ if (name && url) {
   pool.query(
    'INSERT INTO links (name, URL) VALUES ($1, $2)', 
-   [name, URL], 
+   [name, url], 
    (error, results) => {
     if(error) {
      throw error
